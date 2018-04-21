@@ -3,178 +3,59 @@ import os
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+
+# app specific imports
 import pandas as pd
-from haversine import haversine
-from math import radians
-import ast
+import random
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Get environment variables
 telegram_token = str(os.environ.get('TELEGRAM_TOKEN'))
 google_token = str(os.environ.get('GOOGLEMAPS_TOKEN'))
 
+# defining Handlers
 def start(bot, update):
-    """ When user presses /start, prompts user for location or postal code with buttons"""
+    """ When /start is pressed - prompts user with brief introduction and ask to press GO! button """
+    go_recommend = telegram.KeyboardButton(text="GO!")
+    custom_keyboard = [[go_recommend]]
+    chat_reply = "Hello hello! Want me to suggest food places for you? Press GO!"
+    reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+    bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
 
-    if update.message.chat.type == 'private':
-        location_keyboard = telegram.KeyboardButton(text="Send current location", request_location=True)
-        postal_code = telegram.KeyboardButton(text="Input a postal code")
-        custom_keyboard = [[location_keyboard, postal_code]]
-        chat_reply = "Hello hello! You want to send me your current location or input a postal code?"
-        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
-    else:
-        chat_reply = "Hello hello! Please type /find@SGParkingBot and the postal code of the place you want to check (e.g. /find@SGParkingBot 098585). If you want to directly send me your location, talk to me in private ;)"
-        bot.send_message(chat_id=update.message.chat_id, text=chat_reply)
-
-
-def findlocation(bot, update, args):
-    """ Inline find command """
-
-    def postalcode(userinput):
-        front_url = "https://maps.googleapis.com/maps/api/geocode/json?address="
-        end_url = "&components=country:SG&key="+ google_token
-        url = front_url + str(userinput) + end_url
-        address = pd.read_json(url)
-        p_lat = radians(address['results'][0]['geometry']['location']['lat'])
-        p_lng = radians(address['results'][0]['geometry']['location']['lng'])
-        return (p_lat, p_lng)   
-
-    def error_msg(): 
-        location_keyboard = telegram.KeyboardButton(text="Send current location", request_location=True)
-        postal_code = telegram.KeyboardButton(text="Input a postal code")
-        custom_keyboard = [[location_keyboard, postal_code]]
-        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="Cannot leh. You want try again?", reply_markup=reply_markup)
-    
-    if len(args[0]) == 0:
-        bot.send_message(chat_id=update.message.chat_id, text="Can type postal code please (6 digits only hor)")
-    elif len(args[0]) == 6 and str(args[0]).isnumeric():
-        bot.send_message(chat_id=update.message.chat_id, text="You wait ah I check")
-        try:
-            # Check if Google Maps API is able to get geo coords from the 6 digits
-            postal = postalcode(str(args[0]))
-            
-            # Read carpark csv as dataframe
-            df = pd.read_csv('Parking_withcoords.csv')
-
-            # Calculate distance between each carpark and postal code and append it to dataframe
-            distance = []
-            for coord in df['Coord_rad']:  
-                carpark = haversine(postal, ast.literal_eval(coord)) #converts string to tuple
-                distance.append(carpark)
-            df['Distance_km'] = distance
-
-            # Sort in ascending order and extract top 5
-            top_five = df.sort_values('Distance_km').head(5)
-            
-            for row in top_five['Info']:
-                bot.send_message(chat_id=update.message.chat_id, parse_mode='HTML', text=row.replace('\$','$'))
-                
-            bot.send_message(chat_id=update.message.chat_id, text="Fast hor! If you want to check other places, type /start again ok :P")
-        
-        except:
-            error_msg()
-    else:
-        error_msg()
-
-
-
-def location(bot, update):
-    """ If user sends location """
-
-    bot.send_message(chat_id=update.message.chat_id, text="OK you wait ah...")
-    latitude = update.message.location.latitude
-    longitude = update.message.location.longitude
-    bot.send_message(chat_id=update.message.chat_id, text="Just let you know for fun lol - your latitude is {0}, and your longitude is {1}".format(latitude,longitude))
-    try:
-        # Read carpark csv as dataframe
-        df = pd.read_csv('Parking_withcoords.csv')
-    
-        # Calculate distance between each carpark and postal code and append it to dataframe
-        distance = []
-        for coord in df['Coord_rad']:  
-            carpark = haversine((radians(latitude),radians(longitude)), ast.literal_eval(coord)) #converts string to tuple
-            distance.append(carpark)
-        df['Distance_km'] = distance
-
-        # Sort in ascending order and extract top 5
-        top_five = df.sort_values('Distance_km').head(5)
-
-        for row in top_five['Info']:
-            bot.send_message(chat_id=update.message.chat_id, parse_mode='HTML', text=row.replace("\$", "$"))
-
-        bot.send_message(chat_id=update.message.chat_id, text="Fast hor! If you want to check other places, type /start again ok :P")
-    except:
-        bot.send_message(chat_id=update.message.chat_id, text="Jialat liao got error...try again with /start and then use the postal code method can? Paiseh!")
-    
+def go_recommend(bot, update, args):
+    """ When GO! button is pressed - returns a randomised restaurant name """
+    def return_suggestion(userinput):
+        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
+        suggestion = random.choice(list(ccp_clean[0]))
+        return suggestion 
+    return_suggestion
 
 def respond(bot, update):
-    """ If user sends any text response """
-
-    def postalcode(userinput):
-        front_url = "https://maps.googleapis.com/maps/api/geocode/json?address="
-        end_url = "&components=country:SG&key="+ google_token
-        url = front_url + str(userinput) + end_url
-        address = pd.read_json(url)
-        p_lat = radians(address['results'][0]['geometry']['location']['lat'])
-        p_lng = radians(address['results'][0]['geometry']['location']['lng'])
-        return (p_lat, p_lng)   
-
+    """ When user sends any text response """
     def error_msg(): 
-        location_keyboard = telegram.KeyboardButton(text="Send current location", request_location=True)
-        postal_code = telegram.KeyboardButton(text="Input a postal code")
-        custom_keyboard = [[location_keyboard, postal_code]]
+        go_recommend = telegram.KeyboardButton(text="GO!")
+        custom_keyboard = [[go_recommend]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="Cannot leh. You want try again?", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="Aiyo you want to chat with me ah? I shy leh LOL just press GO!", reply_markup=reply_markup)
     
-    if update.message.text == 'Input a postal code':
-        bot.send_message(chat_id=update.message.chat_id, text="Ok please give me a postal code (6 digits only hor)")
-    elif len(update.message.text) == 6 and str(update.message.text).isnumeric():
-        bot.send_message(chat_id=update.message.chat_id, text="You wait ah I check")
-        try:
-            # Check if Google Maps API is able to get geo coords from the 6 digits
-            postal = postalcode(str(update.message.text))
-            
-            # Read carpark csv as dataframe
-            df = pd.read_csv('Parking_withcoords.csv')
+    error_msg()
 
-            # Calculate distance between each carpark and postal code and append it to dataframe
-            distance = []
-            for coord in df['Coord_rad']:  
-                carpark = haversine(postal, ast.literal_eval(coord)) #converts string to tuple
-                distance.append(carpark)
-            df['Distance_km'] = distance
-
-            # Sort in ascending order and extract top 5
-            top_five = df.sort_values('Distance_km').head(5)
-            
-            for row in top_five['Info']:
-                bot.send_message(chat_id=update.message.chat_id, parse_mode='HTML', text=row.replace('\$','$'))
-                
-            bot.send_message(chat_id=update.message.chat_id, text="Fast hor! If you want to check other places, type /start again ok :P")
-        
-        except:
-            error_msg()
-    else:
-        error_msg()
-
-
-
-def help(bot, update):
+def helper_help(bot, update):
     """ If user sends /help command """
     bot.send_message(chat_id=update.message.chat_id, text="Type /start to start LOL")
 
-def unknown(bot, update):
+def helper_unknown(bot, update):
     """ If user sends unknown command """
     bot.send_message(chat_id=update.message.chat_id, text="Sorry leh, I don't know that command. If you dunno got what command, just type / then everything will come out")
 
-def error(bot, update, error):
-    """ Log Errors"""
+def helper_error(bot, update, error, logger):
+    """ Log Errors """
     logger.warning('Update "%s" caused error "%s"' % (update, error))
 
+# define main function
 def main():
     """ This is where the bot starts from! """
 
@@ -183,27 +64,21 @@ def main():
     # Get the dispatcher to register handlers
     dispatch = updater.dispatcher
 
-    # on different commands - answer in Telegram
+    # define which handler to use on different commands to answer in Telegram
     start_handler = CommandHandler('start', start)
     dispatch.add_handler(start_handler)
-
-    location_handler = MessageHandler(Filters.location, location)
-    dispatch.add_handler(location_handler)
 
     respond_handler = MessageHandler(Filters.text, respond)
     dispatch.add_handler(respond_handler)
 
-    help_handler = CommandHandler('help', help)
+    help_handler = CommandHandler('help', helper_help)
     dispatch.add_handler(help_handler)
 
-    find_handler = CommandHandler('find', findlocation, pass_args=True)
-    dispatch.add_handler(find_handler)
-
-    unknown_handler = MessageHandler(Filters.command, unknown)
+    unknown_handler = MessageHandler(Filters.command, helper_unknown)
     dispatch.add_handler(unknown_handler)
 
     # log all errors
-    dispatch.add_error_handler(error)
+    dispatch.add_error_handler(helper_error)
 
     #PROD
     port_number = int(os.environ.get('PORT', '5000'))
