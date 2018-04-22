@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 # Get environment variables
 telegram_token = str(os.environ.get('TELEGRAM_TOKEN'))
-google_token = str(os.environ.get('GOOGLEMAPS_TOKEN'))
 
 # defining Handlers
 def start(bot, update):
