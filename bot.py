@@ -32,15 +32,16 @@ def respond(bot, update):
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Aiyo you want to chat with me ah? I shy leh LOL just press GO!", reply_markup=reply_markup)
     
-    def return_suggestion():
-        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
-        suggestion = random.choice(list(ccp_clean[0]))
-        return suggestion
+    # def return_suggestion():
+    #     ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
+    #     suggestion = random.choice(list(ccp_clean[0]))
+    #     return suggestion
 
     #When GO! button is pressed - returns a randomised restaurant name
     try:
         bot.send_message(chat_id=update.message.chat_id, text="Ok you wait ah I checking the mall directory")
-        suggestion = return_suggestion()
+        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
+        suggestion = random.choice(list(ccp_clean[0]))
         bot.send_message(chat_id=update.message.chat_id, text=suggestion)
     except:
         error_msg()
