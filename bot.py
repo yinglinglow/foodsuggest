@@ -84,7 +84,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=port_number,
                           url_path=telegram_token)
-    updater.bot.setWebhook("https://dashproject.herokuapp.com/" + telegram_token)
+    updater.bot.setWebhook("https://foodsuggestsg.herokuapp.com/" + telegram_token)
     updater.idle()
 
 if __name__ == '__main__':
