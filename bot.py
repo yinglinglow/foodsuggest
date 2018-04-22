@@ -29,7 +29,7 @@ def go_recommend(bot, update, args):
     def return_suggestion(userinput):
         ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
         suggestion = random.choice(list(ccp_clean[0]))
-        return suggestion 
+        bot.send_message(chat_id=update.message.chat_id, text=suggestion)
     return_suggestion
 
 def respond(bot, update):
