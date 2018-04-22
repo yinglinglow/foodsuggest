@@ -18,11 +18,11 @@ telegram_token = str(os.environ.get('TELEGRAM_TOKEN'))
 # defining Handlers
 def start(bot, update):
     """ When /start is pressed - prompts user with brief introduction and ask to press GO! button """
-    go_recommend = telegram.KeyboardButton(text="GO!")
-    custom_keyboard = [[go_recommend]]
+    #go_recommend = telegram.KeyboardButton(text="GO!")
+    #custom_keyboard = [[go_recommend]]
     chat_reply = "Hello hello! Want me to suggest food places for you? Press GO!"
-    reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-    bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
+    #reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+    bot.send_message(chat_id=update.message.chat_id, text=chat_reply)#, reply_markup=reply_markup)
 
 def go_recommend(bot, update, args):
     """ When GO! button is pressed - returns a randomised restaurant name """
