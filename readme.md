@@ -9,4 +9,4 @@ Now serving: Changi City Point
 
 Future features: Filter by options (e.g. saladday, FridayFood, rainyday, FarAway)
 
-Free hosting on AWS Lambda ;)
+Free hosting on Heroku ;)
