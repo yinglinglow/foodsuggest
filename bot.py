@@ -43,6 +43,10 @@ def respond(bot, update):
         ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
         suggestion = random.choice(list(ccp_clean['0']))
         bot.send_message(chat_id=update.message.chat_id, text=suggestion)
+        go_recommend = telegram.KeyboardButton(text="GO!")
+        custom_keyboard = [[go_recommend]]
+        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+        bot.send_message(chat_id=update.message.chat_id, text="If you want another recommendation, just press again - GO!")
     except:
         error_msg()
 
