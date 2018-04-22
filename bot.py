@@ -18,20 +18,11 @@ telegram_token = str(os.environ.get('TELEGRAM_TOKEN'))
 # defining Handlers
 def start(bot, update):
     """ When /start is pressed - prompts user with brief introduction and ask to press GO! button """
-    go_recommend = telegram.KeyboardButton(text="GO!")
-    custom_keyboard = [[go_recommend]]
+    go_button = telegram.KeyboardButton(text="GO!")
+    custom_keyboard = [[go_button]]
     chat_reply = "Hello hello! Want me to suggest food places for you? Press GO!"
     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
     bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
-
-def go_recommend(bot, update, args):
-    """ When GO! button is pressed - returns a randomised restaurant name """
-    def return_suggestion():
-        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
-        suggestion = random.choice(list(ccp_clean[0]))
-        return suggestion
-    suggestion = return_suggestion()
-    bot.send_message(chat_id=update.message.chat_id, text=suggestion)
 
 def respond(bot, update):
     """ When user sends any text response """
@@ -41,7 +32,18 @@ def respond(bot, update):
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Aiyo you want to chat with me ah? I shy leh LOL just press GO!", reply_markup=reply_markup)
     
-    error_msg()
+    def return_suggestion():
+        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
+        suggestion = random.choice(list(ccp_clean[0]))
+        return suggestion
+
+    #When GO! button is pressed - returns a randomised restaurant name
+    try:
+        bot.send_message(chat_id=update.message.chat_id, text="Ok you wait ah I checking the mall directory")
+        suggestion = return_suggestion()
+        bot.send_message(chat_id=update.message.chat_id, text=suggestion)
+    except:
+        error_msg()
 
 def helper_help(bot, update):
     """ If user sends /help command """
