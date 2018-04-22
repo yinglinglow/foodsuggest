@@ -26,11 +26,12 @@ def start(bot, update):
 
 def go_recommend(bot, update, args):
     """ When GO! button is pressed - returns a randomised restaurant name """
-    def return_suggestion(userinput):
+    def return_suggestion():
         ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
         suggestion = random.choice(list(ccp_clean[0]))
-        bot.send_message(chat_id=update.message.chat_id, text=suggestion)
-    return_suggestion
+        return suggestion
+    suggestion = return_suggestion()
+    bot.send_message(chat_id=update.message.chat_id, text=suggestion)
 
 def respond(bot, update):
     """ When user sends any text response """
