@@ -57,7 +57,7 @@ def respond(bot, update):
         suggestion = random.choice(list(ccp_clean['0']))
         bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
 
-        another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in CCP")
+        another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in Changi City Point")
         location_button = telegram.KeyboardButton(text="Suggest a location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
         custom_keyboard = [[another_restaurant_button, location_button, all_location_button]]
@@ -74,7 +74,7 @@ def respond(bot, update):
         all_location_button = telegram.KeyboardButton(text="See all locations")
         custom_keyboard = [[another_restaurant_button, location_button, all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
 
     if update.message.text == 'GO!': 
         try:
