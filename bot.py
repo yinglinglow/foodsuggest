@@ -43,7 +43,7 @@ def respond(bot, update):
         all_location_button = telegram.KeyboardButton(text="See all locations")
         custom_keyboard = [[location_button, all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="Do you want me to suggest another location? You can also choose to see all locations!", reply_markup=reply_markup)
 
     def see_all_locations():
         ccp_button = telegram.KeyboardButton(text="Changi City Point")
@@ -60,9 +60,11 @@ def respond(bot, update):
         another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in CCP")
         location_button = telegram.KeyboardButton(text="Suggest another location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
+        bot.send_message(chat_id=update.message.chat_id, text="debugging1")
         custom_keyboard = [[another_restaurant_button, location_button, all_location_button]]
+        bot.send_message(chat_id=update.message.chat_id, text="debugging2")
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
 
     def suggest_ue_restaurants():
         uebizhub = pd.read_csv('uebizhub.csv', index_col=0)
@@ -79,7 +81,7 @@ def respond(bot, update):
     if update.message.text == 'GO!': 
         try:
             suggest_location()
-            see_all_locations()
+            next_step_prompt
         except:
             error_msg()
 
