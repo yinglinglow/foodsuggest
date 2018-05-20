@@ -32,25 +32,38 @@ def respond(bot, update):
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Aiyo paiseh got error LOL try again ok, just press GO!", reply_markup=reply_markup)
     
-    # def return_suggestion():
-    #     ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
-    #     suggestion = random.choice(list(ccp_clean[0]))
-    #     return suggestion
 
-    #When GO! button is pressed - returns a randomised restaurant name
-    try:
-        bot.send_message(chat_id=update.message.chat_id, text="Ok you wait ah I checking the mall directory")
-        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
-        suggestion = random.choice(list(ccp_clean['0']))
-        bot.send_message(chat_id=update.message.chat_id, text=suggestion)
+    if update.message.text == 'GO!': 
+        try:
+            locations = pd.read_csv('locations.csv', index_col=0)
+            suggestion = random.choice(list(locations['0']))
+            bot.send_message(chat_id=update.message.chat_id, text=suggestion)
 
-        # prompt another GO!
-        go_recommend = telegram.KeyboardButton(text="GO!")
-        custom_keyboard = [[go_recommend]]
-        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        chat_reply="If you want another recommendation, just press again - GO!"
-        bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
-    except:
+            # prompt restaurante search
+            ccp_button = telegram.KeyboardButton(text="Changi City Point")
+            custom_keyboard = [[ccp_button]]
+            reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+            bot.send_message(chat_id=update.message.chat_id, text="Click the below if you want me to suggest a restaurant in the location, or any other location!", reply_markup=reply_markup)
+    
+        except:
+            error_msg()
+
+    elif update.message.text == 'Changi City Point': 
+        try:
+            ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
+            suggestion = random.choice(list(ccp_clean['0']))
+            bot.send_message(chat_id=update.message.chat_id, text=suggestion)
+            bot.send_message(chat_id=update.message.chat_id, text="If you want another location recommendation, just press again - GO!")
+
+            # prompt another GO!
+            go_recommend = telegram.KeyboardButton(text="GO!")
+            custom_keyboard = [[go_recommend]]
+            reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+            chat_reply="If you want another recommendation, just press again - GO!"
+            bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
+        except:
+            error_msg()
+    else:
         error_msg()
 
 def helper_help(bot, update):
