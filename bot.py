@@ -37,9 +37,9 @@ def respond(bot, update):
         try:
             locations = pd.read_csv('locations.csv', index_col=0)
             suggestion = random.choice(list(locations['0']))
-            bot.send_message(chat_id=update.message.chat_id, text=suggestion)
+            bot.send_message(chat_id=update.message.chat_id, text=f"We should go to... {suggestion}!!")
 
-            # prompt restaurante search
+            # prompt restaurant search
             ccp_button = telegram.KeyboardButton(text="Changi City Point")
             custom_keyboard = [[ccp_button]]
             reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
@@ -52,8 +52,7 @@ def respond(bot, update):
         try:
             ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
             suggestion = random.choice(list(ccp_clean['0']))
-            bot.send_message(chat_id=update.message.chat_id, text=suggestion)
-            bot.send_message(chat_id=update.message.chat_id, text="If you want another location recommendation, just press again - GO!")
+            bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
 
             # prompt another GO!
             go_recommend = telegram.KeyboardButton(text="GO!")
