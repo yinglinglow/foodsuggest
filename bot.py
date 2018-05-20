@@ -50,6 +50,7 @@ def respond(bot, update):
 
     elif update.message.text == 'Changi City Point': 
         try:
+            bot.send_message(chat_id=update.message.chat_id, text="Debugging")
             ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
             suggestion = random.choice(list(ccp_clean['0']))
             bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
