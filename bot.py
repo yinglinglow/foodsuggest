@@ -41,7 +41,8 @@ def respond(bot, update):
 
             # prompt restaurant search
             ccp_button = telegram.KeyboardButton(text="Changi City Point")
-            custom_keyboard = [[ccp_button]]
+            uebiz_button = telegram.KeyboardButton(text="UE BizHub")
+            custom_keyboard = [[ccp_button, uebiz_button]]
             reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
             bot.send_message(chat_id=update.message.chat_id, text="Click the below if you want me to suggest a restaurant in the location, or any other location!", reply_markup=reply_markup)
     
@@ -50,9 +51,23 @@ def respond(bot, update):
 
     elif update.message.text == 'Changi City Point': 
         try:
-            bot.send_message(chat_id=update.message.chat_id, text="Debugging")
             ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
             suggestion = random.choice(list(ccp_clean['0']))
+            bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
+
+            # prompt another GO!
+            go_recommend = telegram.KeyboardButton(text="GO!")
+            custom_keyboard = [[go_recommend]]
+            reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+            chat_reply="If you want another recommendation, just press again - GO!"
+            bot.send_message(chat_id=update.message.chat_id, text=chat_reply, reply_markup=reply_markup)
+        except:
+            error_msg()
+
+    elif update.message.text == 'UE BizHub': 
+        try:
+            uebizhub = pd.read_csv('uebizhub.csv', index_col=0)
+            suggestion = random.choice(list(uebizhub['0']))
             bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
 
             # prompt another GO!
