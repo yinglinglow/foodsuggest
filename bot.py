@@ -29,7 +29,7 @@ def respond(bot, update):
     def error_msg(): 
         location_button = telegram.KeyboardButton(text="Suggest a location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
-        custom_keyboard = [[location_button, all_location_button]]
+        custom_keyboard = [[location_button], [all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Aiyo paiseh got error LOL try again can?", reply_markup=reply_markup)
 
@@ -41,14 +41,14 @@ def respond(bot, update):
     def next_step_prompt():
         location_button = telegram.KeyboardButton(text="Suggest a location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
-        custom_keyboard = [[location_button, all_location_button]]
+        custom_keyboard = [[location_button], [all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Do you want me to suggest another location? You can also choose to see all locations!", reply_markup=reply_markup)
 
     def see_all_locations():
         ccp_button = telegram.KeyboardButton(text="Changi City Point")
         uebiz_button = telegram.KeyboardButton(text="UE BizHub")
-        custom_keyboard = [[ccp_button, uebiz_button]]
+        custom_keyboard = [[ccp_button], [uebiz_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Click the below if you want me to suggest a restaurant in the location, or any other locations!", reply_markup=reply_markup)
 
@@ -60,7 +60,7 @@ def respond(bot, update):
         another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in Changi City Point")
         location_button = telegram.KeyboardButton(text="Suggest a location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
-        custom_keyboard = [[another_restaurant_button, location_button, all_location_button]]
+        custom_keyboard = [[another_restaurant_button], [location_button], [all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
 
@@ -72,7 +72,7 @@ def respond(bot, update):
         another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in UE BizHub")
         location_button = telegram.KeyboardButton(text="Suggest a location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
-        custom_keyboard = [[another_restaurant_button, location_button, all_location_button]]
+        custom_keyboard = [[another_restaurant_button], [location_button], [all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
 
