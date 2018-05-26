@@ -7,6 +7,7 @@ import logging
 # app specific imports
 import pandas as pd
 import random
+from restaurants import Location
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -53,17 +54,17 @@ def respond(bot, update):
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Click the below if you want me to suggest a restaurant in the location, or any other locations!", reply_markup=reply_markup)
 
-    def suggest_ccp_restaurants():
-        ccp_clean = pd.read_csv('ccp_clean.csv', index_col=0)
-        suggestion = random.choice(list(ccp_clean['0']))
-        bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
+    # def suggest_ccp_restaurants():
+    #     ccp_clean = pd.read_csv('ccp.csv', index_col=0)
+    #     suggestion = random.choice(list(ccp_clean['0']))
+    #     bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
 
-        another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in Changi City Point")
-        location_button = telegram.KeyboardButton(text="Suggest a location")
-        all_location_button = telegram.KeyboardButton(text="See all locations")
-        custom_keyboard = [[another_restaurant_button], [location_button], [all_location_button]]
-        reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
+    #     another_restaurant_button = telegram.KeyboardButton(text="Suggest another restaurant in Changi City Point")
+    #     location_button = telegram.KeyboardButton(text="Suggest a location")
+    #     all_location_button = telegram.KeyboardButton(text="See all locations")
+    #     custom_keyboard = [[another_restaurant_button], [location_button], [all_location_button]]
+    #     reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
+    #     bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
 
     def suggest_ue_restaurants():
         uebizhub = pd.read_csv('uebizhub.csv', index_col=0)
@@ -91,15 +92,13 @@ def respond(bot, update):
 
 
     if update.message.text == 'GO!': 
-        try:
-            suggest_location()
-            next_step_prompt()
-        except:
-            error_msg()
+        suggest_location()
+        next_step_prompt()
 
     elif 'Changi City Point' in update.message.text: 
-        try:
-            suggest_ccp_restaurants()
+        try: 
+            ccp = Location('Changi City Point', 'ccp.csv')
+            ccp.suggest_restaurants()
         except:
             error_msg()
 
