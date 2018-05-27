@@ -86,17 +86,17 @@ def respond(bot, update):
         suggestion = suggest_location()
         next_step_prompt(suggestion)
 
-    elif 'Changi City Point' in update.message.text: 
-        try: 
-            ccp.suggest_restaurants()
-        except:
-            error_msg()
+    # elif 'Changi City Point' in update.message.text: 
+    #     try: 
+    #         ccp.suggest_restaurants()
+    #     except:
+    #         error_msg()
 
-    elif 'UE BizHub' in update.message.text: 
-        try:
-            ue.suggest_restaurants()
-        except:
-            error_msg()
+    # elif 'UE BizHub' in update.message.text: 
+    #     try:
+    #         ue.suggest_restaurants()
+    #     except:
+    #         error_msg()
 
     elif 'Plaza 8' in update.message.text: 
         try:
@@ -136,7 +136,14 @@ def respond(bot, update):
             error_msg()
 
     else:
-        error_msg()
+        location_dict = {'Changi City Point':ccp, 'UE BizHub': ue}
+        for key in location_dict.keys():
+            if key in update.message.text:
+                try:
+                    database = location_dict[key]
+                    database.suggest_restaurants()
+                except:
+                    error_msg()
 
 def helper_help(bot, update):
     """ If user sends /help command """
