@@ -51,7 +51,10 @@ def respond(bot, update):
         ccp_button = telegram.KeyboardButton(text="Changi City Point")
         uebiz_button = telegram.KeyboardButton(text="UE BizHub")
         plaza8_button = telegram.KeyboardButton(text="Plaza 8")
-        custom_keyboard = [[ccp_button], [uebiz_button], [plaza8_button]]
+        ibm_button = telegram.KeyboardButton(text="IBM")
+        sig_button = telegram.KeyboardButton(text="The Signature")
+        airt3_button = telegram.KeyboardButton(text="Airport T3")
+        custom_keyboard = [[ccp_button], [uebiz_button], [plaza8_button], [ibm_button], [sig_button], [airt3_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
         bot.send_message(chat_id=update.message.chat_id, text="Click the below if you want me to suggest a restaurant in the location, or any other locations!", reply_markup=reply_markup)
 
@@ -77,6 +80,7 @@ def respond(bot, update):
     plaza8 = Location('Plaza 8', 'locations/plaza8.csv')
     signature = Location('The Signature', 'locations/signature.csv')
     airport_t3 = Location('Airport T3', 'locations/airportt3.csv')
+    ibm = Location('IBM', 'locations/ibm.csv')
 
     if update.message.text == 'GO!': 
         suggestion = suggest_location()
@@ -109,6 +113,12 @@ def respond(bot, update):
     elif 'Airport T3' in update.message.text: 
         try:
             airport_t3.suggest_restaurants()
+        except:
+            error_msg()
+
+    elif 'IBM' in update.message.text: 
+        try:
+            ibm.suggest_restaurants()
         except:
             error_msg()
 
