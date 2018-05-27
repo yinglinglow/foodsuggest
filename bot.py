@@ -85,6 +85,7 @@ def respond(bot, update):
             self.location_csv = location_csv
 
         def suggest_restaurants(self):
+            bot.send_message(chat_id=update.message.chat_id, text=f"Wait ah i checking... {self.location_csv}")
             restaurant_database = pd.read_csv(self.location_csv, index_col=0)
             suggestion = random.choice(list(restaurant_database['name']))
             bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
@@ -122,7 +123,7 @@ def respond(bot, update):
         except:
             error_msg()
 
-    elif update.message.text == 'Suggest a location':
+    elif update.message.text == 'Suggest another location':
         try:
             suggest_location()
             see_all_locations()
