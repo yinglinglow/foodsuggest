@@ -37,13 +37,15 @@ def respond(bot, update):
         locations = pd.read_csv('locations.csv', index_col=0)
         suggestion = random.choice(list(locations['0']))
         bot.send_message(chat_id=update.message.chat_id, text=f"We should go to... {suggestion}!!")
+        return suggestion
 
-    def next_step_prompt():
-        location_button = telegram.KeyboardButton(text="Suggest a location")
+    def next_step_prompt(suggestion):
+        location_restaurant_button = telegram.KeyboardButton(text=f"Suggest a restaurant in {suggestion}")
+        location_button = telegram.KeyboardButton(text="Suggest another location")
         all_location_button = telegram.KeyboardButton(text="See all locations")
-        custom_keyboard = [[location_button], [all_location_button]]
+        custom_keyboard = [[location_restaurant_button], [location_button], [all_location_button]]
         reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
-        bot.send_message(chat_id=update.message.chat_id, text="Do you want me to suggest another location? You can also choose to see all locations!", reply_markup=reply_markup)
+        bot.send_message(chat_id=update.message.chat_id, text="Do you want me to suggest a restaurant in this location? Suggest another location? You can also choose to see all locations!", reply_markup=reply_markup)
 
     def see_all_locations():
         ccp_button = telegram.KeyboardButton(text="Changi City Point")
@@ -91,8 +93,8 @@ def respond(bot, update):
 
     class Location(object):
         def __init__(self, location_name, location_csv):
-            self.location_name = None
-            self.location_csv = None
+            self.location_name = location_name
+            self.location_csv = location_csv
 
         def suggest_restaurants(self):
             restaurant_database = pd.read_csv(self.location_csv, index_col=0)
@@ -108,8 +110,8 @@ def respond(bot, update):
 
 
     if update.message.text == 'GO!': 
-        suggest_location()
-        next_step_prompt()
+        suggestion = suggest_location()
+        next_step_prompt(suggestion)
 
     elif 'Changi City Point' in update.message.text: 
         try: 
