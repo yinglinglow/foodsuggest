@@ -96,6 +96,9 @@ def respond(bot, update):
             reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
             bot.send_message(chat_id=update.message.chat_id, text="Let me know if you want another restaurant recommendation... or another location recommendation!", reply_markup=reply_markup)
 
+    ccp = Location('Changi City Point', 'ccp.csv')
+    ue = Location('UE BizHub', 'uebizhub.csv')
+    plaza8 = Location('Plaza 8', 'plaza8.csv')
 
     if update.message.text == 'GO!': 
         suggestion = suggest_location()
@@ -103,21 +106,18 @@ def respond(bot, update):
 
     elif 'Changi City Point' in update.message.text: 
         try: 
-            ccp = Location('Changi City Point', 'ccp.csv')
             ccp.suggest_restaurants()
         except:
             error_msg()
 
     elif 'UE BizHub' in update.message.text: 
         try:
-            ue = Location('UE BizHub', 'uebizhub.csv')
             ue.suggest_restaurants()
         except:
             error_msg()
 
     elif 'Plaza 8' in update.message.text: 
         try:
-            plaza8 = Location('Plaza 8', 'plaza8.csv')
             plaza8.suggest_restaurants()
         except:
             error_msg()
