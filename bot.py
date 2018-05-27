@@ -35,7 +35,7 @@ def respond(bot, update):
 
     def suggest_location():
         locations = pd.read_csv('locations.csv', index_col=0)
-        suggestion = random.choice(list(locations['0']))
+        suggestion = random.choice(list(locations['name']))
         bot.send_message(chat_id=update.message.chat_id, text=f"We should go to... {suggestion}!!")
         return suggestion
 
@@ -85,13 +85,12 @@ def respond(bot, update):
             self.location_csv = location_csv
 
         def suggest_restaurants(self):
-            bot.send_message(chat_id=update.message.chat_id, text=f"Wait ah i checking... {self.location_csv}")
             restaurant_database = pd.read_csv(self.location_csv, index_col=0)
             suggestion = random.choice(list(restaurant_database['name']))
             bot.send_message(chat_id=update.message.chat_id, text=f"We should eat at... {suggestion}!!")
 
             another_restaurant_button = telegram.KeyboardButton(text=f"Suggest another restaurant in {self.location_name}")
-            location_button = telegram.KeyboardButton(text="Suggest a location")
+            location_button = telegram.KeyboardButton(text="Suggest another location")
             all_location_button = telegram.KeyboardButton(text="See all locations")
             custom_keyboard = [[another_restaurant_button], [location_button], [all_location_button]]
             reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard, one_time_keyboard=True, resize_keyboard=True)
@@ -123,7 +122,7 @@ def respond(bot, update):
         except:
             error_msg()
 
-    elif update.message.text == 'Suggest another location':
+    elif update.message.text in ['Suggest a location', 'Suggest another location']:
         try:
             suggest_location()
             see_all_locations()
