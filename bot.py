@@ -76,6 +76,7 @@ def respond(bot, update):
     ue = Location('UE BizHub', 'locations/uebizhub.csv')
     plaza8 = Location('Plaza 8', 'locations/plaza8.csv')
     signature = Location('The Signature', 'locations/signature.csv')
+    airport_t3 = Location('Airport T3', 'locations/airportt3.csv')
 
     if update.message.text == 'GO!': 
         suggestion = suggest_location()
@@ -105,10 +106,16 @@ def respond(bot, update):
         except:
             error_msg()
 
+    elif 'Airport T3' in update.message.text: 
+        try:
+            airport_t3.suggest_restaurants()
+        except:
+            error_msg()
+
     elif update.message.text in ['Suggest a location', 'Suggest another location']:
         try:
-            suggest_location()
-            see_all_locations()
+            suggestion = suggest_location()
+            next_step_prompt(suggestion)
         except:
             error_msg()
 
